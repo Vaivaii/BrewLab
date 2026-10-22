@@ -15,13 +15,13 @@ const SOURCES = {
 const POUR_PROFILES=[
  {id:"pulse-3",title:"Compact · 3 tuangan",label:"Bloom + 2 tuangan",descriptor:"Dua pulse utama; resep ringkas sebagai baseline.",count:3,targets:[.60,1],times:[45,75],offsets:{c3s:-1,c40:-1},style:"Tuang spiral lembut, stabil; jangan menyiram kertas."},
  {id:"pulse-4",title:"Balanced · 4 tuangan",label:"Bloom + 3 tuangan",descriptor:"Air dibagi merata dengan jeda antar-pour.",count:4,targets:[.50,.75,1],times:[45,75,105],offsets:{c3s:0,c40:0},style:"Tuang spiral kecil dan pertahankan bed tetap rata."},
- {id:"pulse-5",title:"Pulse · 5 tuangan",label:"Bloom + 4 tuangan",descriptor:"Pulse lebih banyak; grind disetel agar aliran tidak terlalu lambat.",count:5,targets:[.40,.60,.80,1],times:[45,70,95,120],offsets:{c3s:1,c40:2},style:"Aliran sekitar 4–5 g/detik; tunggu level air turun mendekati bed sebelum pulse berikutnya."}
+ {id:"pulse-5",title:"Pulse · 5 tuangan",label:"Bloom + 4 tuangan",descriptor:"Pulse lebih banyak; grind disetel agar aliran tidak terlalu lambat.",count:5,targets:[.40,.60,.80,1],times:[45,70,90,110],offsets:{c3s:1,c40:2},style:"Aliran sekitar 4–5 g/detik; tunggu level air turun mendekati bed sebelum pulse berikutnya."}
 ];
 const METHOD={
- b75:{name:"Timemore B75",kind:"pour",ratio:16,temp:93,c3s:15,c40:22,grind:"medium / medium-fine",finish:"Target drawdown awal 2:30–3:15; sesuaikan menurut aliran dan rasa.",sources:["orea","sca"],sourceNote:"Pola flat-bottom diadaptasi dari panduan pulse OREA; bukan klaim resep resmi TIMEMORE B75."},
- v60:{name:"Hario V60",kind:"pour",ratio:16.7,temp:93,c3s:15,c40:24,grind:"medium-fine",finish:"Target drawdown awal 2:30–3:15; panduan Hario dasar sekitar 2:30.",sources:["harioV60","harioGuide","sca"]},
- orea:{name:"OREA",kind:"pour",ratio:16.25,temp:94,c3s:15,c40:22,grind:"medium / medium-coarse",finish:"Target selesai 2:30–3:15; OREA menyarankan flow sekitar 5 g/detik.",sources:["orea"]},
- switch:{name:"Hario Switch",kind:"switch",ratio:15.4,temp:92,c3s:16,c40:23,grind:"medium",finish:"Ikuti waktu buka/tutup valve dari teknik terpilih.",sources:["switch","switchHybrid","immersion"]},
+ b75:{name:"Timemore B75",kind:"pour",ratio:16,temp:93,c3s:15,c40:22,grind:"medium / medium-fine",finish:"Target drawdown awal 2:30–3:15; sesuaikan menurut aliran dan rasa.",sources:["orea","sca","c3s","comandante","roast"],sourceNote:"Pola flat-bottom diadaptasi dari panduan pulse OREA; bukan klaim resep resmi TIMEMORE B75."},
+ v60:{name:"Hario V60",kind:"pour",ratio:16.7,temp:93,c3s:15,c40:24,grind:"medium-fine",finish:"Target drawdown awal 2:30–3:15; panduan Hario dasar sekitar 2:30.",sources:["harioV60","harioGuide","sca","c3s","comandante","roast"]},
+ orea:{name:"OREA",kind:"pour",ratio:16.25,temp:94,c3s:15,c40:22,grind:"medium / medium-coarse",finish:"Target selesai 2:30–3:15; OREA menyarankan flow sekitar 5 g/detik.",sources:["orea","c3s","comandante","roast"]},
+ switch:{name:"Hario Switch",kind:"switch",ratio:15.4,temp:92,c3s:16,c40:23,grind:"medium",finish:"Ikuti waktu buka/tutup valve dari teknik terpilih.",sources:["switch","switchHybrid","immersion","c3s","comandante","roast"]},
  aero:{name:"AeroPress",kind:"aero",ratio:14,temp:85,c3s:14,c40:18,grind:"medium",finish:"Press perlahan; jangan memaksa plunger.",sources:["aeropress","aeropressTemp"]},
  moka:{name:"Moka pot",kind:"moka",ratio:10,temp:90,c3s:10,c40:16,grind:"fine (bukan espresso-fine)",finish:"Api kecil; angkat saat aliran memucat sebelum sputtering.",sources:["c3s","comandante"]}
 };
@@ -77,14 +77,14 @@ function makeSwitchRecipes(form,m,dose,roast,grinder){
    {title:"Tuangan 1 · valve tertutup",at:0,atSeconds:0,target:bloom,amount:bloom,duration:"±8 detik",durationSeconds:8,action:"Immersion",detail:`Valve CLOSED. Tuang ${bloom} g air ${firstTemp}°C hingga semua kopi basah; tahan sampai 0:40.`},
    {title:"Tuangan 2 · buka valve",at:40,atSeconds:40,target:round(water*.5),amount:Math.max(0,round(water*.5)-bloom),duration:`±${Math.max(3,round((water*.5-bloom)/5))} detik`,durationSeconds:Math.max(3,round((water*.5-bloom)/5)),action:"Percolation",detail:`Pada 0:40 buka valve dan tuang hingga total ${round(water*.5)} g dengan spiral.`},
    {title:"Tuangan 3 · suhu lebih rendah",at:80,atSeconds:80,target:water,amount:water-round(water*.5),duration:`±${round(water*.5/5)} detik`,durationSeconds:Math.max(3,round(water*.5/5)),action:"Immersion",detail:`Pada 1:20 tutup valve, tambahkan air 75°C hingga total ${water} g. Pada 2:20 buka valve; angkat dripper sekitar 2:30.`}
-  ],target:"Buka valve sekitar 2:20; angkat dripper sekitar 2:30.",sources:["switch"],contextNotes:contextNotes(form),note:"Suhu 75°C pada tuangan terakhir berasal dari resep kompetisi Hario Global; hasil dapat berbeda pada model/ukuran Switch lain."};
+  ],target:"Buka valve sekitar 2:20; angkat dripper sekitar 2:30.",sources:["switch","c3s","comandante","roast"],contextNotes:contextNotes(form),note:"Suhu 75°C pada tuangan terakhir berasal dari resep kompetisi Hario Global; hasil dapat berbeda pada model/ukuran Switch lain."};
  const total=round(dose*16.7);
  const immersion={id:"switch-immersion",title:"Hario Switch · full immersion",label:"Rendam · 1 tuangan",descriptor:"Tuang sekaligus, rendam, kemudian buka valve; teknik sederhana dengan body lebih terasa.",method:"switch",methodName:m.name,kind:"switch",dose,water:total,ratio:16.7,temp:firstTemp,clicks:click.clicks,grind:"Medium-coarse",grindExplanation:"Mulai sedikit lebih kasar daripada V60 untuk immersion; klik perlu diuji di model grinder.",pourCount:1,
   steps:[
    {title:"Tuang seluruh air",at:0,atSeconds:0,target:total,amount:total,duration:"±30 detik",durationSeconds:30,action:"Immersion",detail:`Valve CLOSED. Tuang ${total} g air ${firstTemp}°C dalam ±30 detik.`},
    {title:"Aduk lembut & rendam",at:60,atSeconds:60,target:total,amount:0,duration:"2:00",durationSeconds:120,action:"Steep",detail:"Aduk lembut agar semua grounds basah. Biarkan valve tertutup sampai sekitar 4:00."},
    {title:"Drain",at:240,atSeconds:240,target:total,amount:0,duration:"hingga selesai",durationSeconds:60,action:"Release",detail:"Buka valve sekitar 4:00 dan biarkan turun; target selesai kira-kira 5:00."}
-  ],target:"Target selesai sekitar 5:00.",sources:["immersion"],contextNotes:contextNotes(form),note:"Adaptasi rasio/waktu untuk dosis pilihan; recipe asal memakai 15 g kopi dan 250 g air."};
+  ],target:"Target selesai sekitar 5:00.",sources:["immersion","c3s","comandante","roast"],contextNotes:contextNotes(form),note:"Adaptasi rasio/waktu untuk dosis pilihan; recipe asal memakai 15 g kopi dan 250 g air."};
  return[hybrid,immersion];
 }
 function makeAeroRecipes(form,m,dose,roast,grinder){
@@ -99,7 +99,7 @@ function makeAeroRecipes(form,m,dose,roast,grinder){
     {title:"Tuang",at:0,atSeconds:0,target:water,amount:water,duration:`±${duration} detik`,durationSeconds:duration,action:"Pour",detail:`Tuang ${water} g air ${temp}°C; mulai dengan medium grind menurut AeroPress.`},
     {title:"Aduk & steep",at:10,atSeconds:10,target:water,amount:0,duration:`${p.steep} detik`,durationSeconds:p.steep,action:"Steep",detail:`Aduk lembut sekitar 3 detik, masukkan plunger untuk menghentikan drip-through, lalu tunggu ${p.steep} detik.`},
     {title:"Press",at:10+p.steep,atSeconds:10+p.steep,target:water,amount:0,duration:"20–30 detik",durationSeconds:25,action:"Press",detail:"Tekan dengan tekanan stabil dan lembut; jangan dipaksa keras."}
-   ],target:"Seduh sekitar 1:30–2:00 termasuk press.",sources:["aeropress","aeropressTemp"],contextNotes:contextNotes(form),note:"Rasio 1:12 dan 1:16 adalah varian eksperimen; gunakan rasio dan rasa sebagai pembanding."};
+   ],target:"Seduh sekitar 1:30–2:00 termasuk press.",sources:["aeropress","aeropressTemp","c3s","comandante","roast"],contextNotes:contextNotes(form),note:"Rasio 1:12 dan 1:16 adalah varian eksperimen; gunakan rasio dan rasa sebagai pembanding."};
  });
 }
 function makeMokaRecipes(form,m,dose,roast,grinder){
@@ -113,7 +113,7 @@ function makeMokaRecipes(form,m,dose,roast,grinder){
     {title:"Isi chamber bawah",at:0,atSeconds:0,target:water,amount:water,duration:"sebelum dipanaskan",durationSeconds:0,action:"Prepare",detail:`Isi air ${water} g sampai di bawah katup pengaman; jumlah nyata mengikuti garis katup ukuran pot.`},
     {title:"Isi basket",at:0,atSeconds:0,action:"Prepare",detail:`Masukkan ${dose} g kopi, ratakan tanpa menekan/memadatkan.`},
     {title:"Panas rendah",at:30,atSeconds:30,action:"Brew",detail:"Rakit dengan aman, panaskan api kecil, angkat sebelum sputtering."}
-   ],target:m.finish,sources:["c3s","comandante"],contextNotes:contextNotes(form),note:"Rasio air terisi tidak sama dengan berat minuman keluar; sesuaikan dengan ukuran pot dan katup."};
+   ],target:m.finish,sources:["c3s","comandante","roast"],contextNotes:contextNotes(form),note:"Rasio air terisi tidak sama dengan berat minuman keluar; sesuaikan dengan ukuran pot dan katup."};
  });
 }
 export function calculateRecipes({dose=15,device="b75",roast="medium",goal="balanced",grinder="c3s",bean="arabica",process="washed",water="filtered",filter="standard"}={}){
