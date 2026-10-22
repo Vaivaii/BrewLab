@@ -1,8 +1,10 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import { calculateRecipe } from '../src/brewing/calculator.js';
-test('B75 baseline for 15g medium roast',()=>{const r=calculateRecipe({dose:15,device:'b75',roast:'medium',goal:'balanced',grinder:'c3s'});assert.equal(r.water,240);assert.equal(r.ratio,16);assert.equal(r.temp,93);assert.equal(r.clicks,16);});
-test('dose scales water',()=>{assert.equal(calculateRecipe({dose:20,device:'b75'}).water,320);});
-test('light roast raises temperature',()=>{assert.equal(calculateRecipe({dose:15,device:'b75',roast:'light'}).temp,95);});
-test('other grinder avoids false click precision',()=>{assert.equal(calculateRecipe({grinder:'other'}).clicks,null);});
-test('moka pot stays in its own recipe range',()=>{const r=calculateRecipe({dose:15,device:'moka'});assert.equal(r.temp,90);assert.equal(r.ratio,10);});
+import test from 'node:test';import assert from 'node:assert/strict';import{calculateRecipe,calculateRecipes}from'../src/brewing/calculator.js';
+test('dose recalculates B75 water',()=>{const r=calculateRecipe({dose:13,device:'b75',goal:'balanced',grinder:'c3s'});assert.equal(r.dose,13);assert.equal(r.water,208);assert.equal(r.ratio,16);});
+test('pour-over offers 3, 4, and 5 total pours including bloom',()=>{const l=calculateRecipes({dose:13,device:'v60',grinder:'c3s'});assert.deepEqual(l.map(r=>r.pourCount),[3,4,5]);assert.deepEqual(l.map(r=>r.steps.length),[3,4,5]);assert.ok(l.every(r=>r.steps.at(-1).target===r.water));});
+test('C3S grind changes with profile and method',()=>{const l=calculateRecipes({dose:13,device:'v60',grinder:'c3s'});assert.deepEqual(l.map(r=>r.clicks),[14,15,16]);assert.equal(calculateRecipes({device:'moka',grinder:'c3s'})[0].clicks,10);assert.equal(calculateRecipes({device:'v60',grinder:'other'})[0].clicks,null);});
+test('light roast changes temperature and grind',()=>{const m=calculateRecipes({device:'v60',roast:'medium',grinder:'c3s'}),l=calculateRecipes({device:'v60',roast:'light',grinder:'c3s'});assert.equal(l[1].temp,96);assert.equal(m[1].temp,93);assert.equal(l[1].clicks,14);});
+test('dose changes cumulative target and schedule',()=>{const l=calculateRecipes({dose:13,device:'orea'});assert.equal(l[2].water,211);assert.equal(l[2].steps.at(-1).target,211);assert.equal(l[2].steps[1].atSeconds,45);});
+test('Switch includes sourced hybrid and immersion recipes',()=>{const l=calculateRecipes({dose:13,device:'switch'});assert.deepEqual(l.map(r=>r.id),['switch-hybrid','switch-immersion']);assert.match(l[0].steps[2].detail,/75°C/);});
+test('AeroPress and moka have specific alternatives',()=>{const a=calculateRecipes({dose:13,device:'aero'}),m=calculateRecipes({dose:13,device:'moka'});assert.deepEqual(a.map(r=>r.ratio),[14,12,16]);assert.deepEqual(m.map(r=>r.ratio),[10,9]);assert.equal(a[0].temp,85);});
+test('water/filter selection appears in guidance',()=>{const r=calculateRecipe({device:'v60',filter:'fast',water:'mineral'});assert.ok(r.contextNotes.some(n=>n.includes('fast-flow')));assert.ok(r.contextNotes.some(n=>n.includes('Air mineral')));});
+test('invalid dose is clamped',()=>{assert.equal(calculateRecipes({dose:-5,device:'v60'})[0].dose,5);});

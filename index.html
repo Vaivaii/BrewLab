@@ -1,72 +1,21 @@
 <!doctype html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#151715">
-  <meta name="description" content="BrewLab — kalkulator resep seduh kopi dan jurnal tasting pribadi.">
-  <title>BrewLab — Coffee Lab</title>
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./brewlab-icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./src/ui/styles.css">
-</head>
-<body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div class="brand-mark">B<span>·</span></div>
-      <div class="brand-copy"><strong>BREWLAB</strong><small>YOUR PERSONAL COFFEE LAB</small></div>
-      <div class="offline-pill"><i></i> LOCAL</div>
-    </header>
-    <main>
-      <section class="hero">
-        <div class="eyebrow">BREW SESSION / 01</div>
-        <h1>Make every<br><em>cup count.</em></h1>
-        <p>Resep terukur. Catatan jujur. Seduhan berikutnya lebih baik.</p>
-      </section>
-      <nav class="tabs" aria-label="Navigasi utama">
-        <button class="tab active" data-tab="brew">01 <span>Seduh</span></button>
-        <button class="tab" data-tab="timer">02 <span>Timer</span></button>
-        <button class="tab" data-tab="journal">03 <span>Jurnal</span></button>
-      </nav>
-      <section id="brew-panel" class="panel">
-        <div class="section-heading"><div><span class="eyebrow">RECIPE BUILDER</span><h2>Racik seduhan</h2></div><span class="tag">BASELINE</span></div>
-        <div class="form-grid">
-          <label>Jenis biji<select id="bean"><option>Arabika</option><option>Robusta</option><option>Blend 70:30</option></select></label>
-          <label>Proses pascapanen<select id="process"><option>Washed</option><option>Natural</option><option>Honey</option><option>Anaerobic</option><option>Wet hulled</option></select></label>
-          <label>Level sangrai<select id="roast"><option value="light">Light</option><option value="medium" selected>Medium</option><option value="dark">Medium-dark / Dark</option></select></label>
-          <label>Metode seduh<select id="device"><option value="b75">Timemore B75</option><option value="v60">Hario V60</option><option value="switch">Hario Switch</option><option value="orea">Orea</option><option value="aero">AeroPress</option><option value="moka">Moka pot</option></select></label>
-          <label>Grinder<select id="grinder"><option value="c3s">Timemore C3S</option><option value="other">Grinder lain / belum dikalibrasi</option></select></label>
-          <label>Dosis kopi (g)<input id="dose" type="number" min="5" max="40" step="0.5" value="15"></label>
-          <label>Target rasa<select id="goal"><option value="balanced">Seimbang, acidity sedikit menonjol</option><option value="sweet">Manis & body</option><option value="bright">Acidity & clarity</option><option value="strong">Body lebih tebal</option></select></label>
-        </div>
-        <button id="calculate" class="primary-btn">Hitung resep <span>↗</span></button>
-        <div id="recipe" class="recipe-card" aria-live="polite"></div>
-        <p class="note">Angka grinder adalah titik awal, bukan standar universal. Kalibrasikan berdasarkan hasil seduhan dan karakter biji.</p>
-      </section>
-      <section id="timer-panel" class="panel hidden">
-        <div class="section-heading"><div><span class="eyebrow">BREW CLOCK</span><h2>Ikuti alurnya</h2></div><span class="tag">TIMER</span></div>
-        <div class="timer-card"><div id="timer-phase" class="eyebrow">SIAP MEMULAI</div><div id="clock" class="clock">00:00</div><div id="timer-hint" class="timer-hint">Siapkan alat dan air.</div><div class="timer-actions"><button id="timer-start" class="primary-btn">Mulai timer</button><button id="timer-reset" class="ghost-btn">Reset</button></div></div>
-        <div id="steps" class="steps"></div>
-      </section>
-      <section id="journal-panel" class="panel hidden">
-        <div class="section-heading"><div><span class="eyebrow">TASTING NOTES</span><h2>Catat hasilnya</h2></div><span class="tag">JOURNAL</span></div>
-        <form id="tasting-form" class="journal-form">
-          <label>Nama biji / origin<input id="origin" placeholder="Contoh: Toraja Kalosi Washed" required></label>
-          <div class="form-grid">
-            <label>Waktu seduh<select id="drawdown"><option>2:00–2:30</option><option selected>2:30–3:00</option><option>3:00–3:30</option><option>3:30+</option></select></label>
-            <label>Acidity<select id="acidity"><option>Rendah</option><option selected>Seimbang</option><option>Menonjol</option><option>Terlalu tajam</option></select></label>
-            <label>Manis<select id="sweetness"><option>Rendah</option><option selected>Sedang</option><option>Tinggi</option></select></label>
-            <label>Body<select id="body"><option>Ringan</option><option selected>Sedang</option><option>Tebal</option></select></label>
-          </div>
-          <label>Catatan rasa<textarea id="notes" rows="3" placeholder="Mis. citrus, cokelat, clean finish..."></textarea></label>
-          <button class="primary-btn" type="submit">Simpan tasting <span>↗</span></button>
-        </form>
-        <div class="section-heading journal-list-heading"><h2>Riwayat seduhan</h2><span id="entry-count" class="tag">0 CATATAN</span></div>
-        <div id="journal-list" class="journal-list"></div>
-      </section>
-    </main>
-    <footer>BREWLAB <span>·</span> BREW WITH INTENTION</footer>
-  </div>
-  <script type="module" src="./src/main.js"></script>
-</body>
-</html>
+<html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#151715"><meta name="description" content="BrewLab — kalkulator resep seduh kopi dan jurnal tasting pribadi."><title>BrewLab — Coffee Lab</title><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./brewlab-icon.svg" type="image/svg+xml"><link rel="stylesheet" href="./src/ui/styles.css"></head>
+<body><div class="app-shell"><header class="topbar"><div class="brand-mark">B<span>·</span></div><div class="brand-copy"><strong>BREWLAB</strong><small>YOUR PERSONAL COFFEE LAB</small></div><div class="offline-pill"><i></i> LOCAL</div></header><main>
+<section class="hero"><div class="eyebrow">BREW SESSION / 01</div><h1>Make every<br><em>cup count.</em></h1><p>Resep terukur. Catatan jujur. Seduhan berikutnya lebih baik.</p></section>
+<nav class="tabs" aria-label="Navigasi utama"><button class="tab active" data-tab="brew">01 <span>Seduh</span></button><button class="tab" data-tab="timer">02 <span>Timer</span></button><button class="tab" data-tab="journal">03 <span>Jurnal</span></button></nav>
+<section id="brew-panel" class="panel"><div class="section-heading"><div><span class="eyebrow">RECIPE BUILDER</span><h2>Racik seduhan</h2></div><span class="tag">KURASI RESEP</span></div><p class="section-intro">Ubah dosis atau peralatan: air, suhu, grind awal, dan jadwal tuangan diperbarui otomatis. Pilih teknik, lalu gunakan sebagai baseline tasting.</p>
+<div class="form-grid">
+<label>Jenis biji<select id="bean"><option value="arabica">Arabika</option><option value="robusta">Robusta</option><option value="blend">Blend 70:30</option></select></label>
+<label>Proses pascapanen<select id="process"><option value="washed">Washed</option><option value="natural">Natural</option><option value="honey">Honey</option><option value="anaerobic">Anaerobic / fermentasi</option><option value="wet-hulled">Wet hulled / giling basah</option></select></label>
+<label>Level sangrai<select id="roast"><option value="light">Light</option><option value="medium" selected>Medium</option><option value="medium-dark">Medium-dark</option><option value="dark">Dark</option></select></label>
+<label>Metode / dripper<select id="device"><option value="b75">Timemore B75 · flat-bottom</option><option value="v60">Hario V60 · cone</option><option value="switch">Hario Switch · hybrid / immersion</option><option value="orea">OREA · flat-bottom</option><option value="aero">AeroPress</option><option value="moka">Moka pot</option></select></label>
+<label>Grinder<select id="grinder"><option value="c3s">Timemore Chestnut C3S</option><option value="c40">Comandante C40 MK4</option><option value="other">Grinder lain / belum dikalibrasi</option></select></label>
+<label>Dosis kopi (g)<input id="dose" type="number" min="5" max="40" step="0.5" value="13"></label>
+<label>Target rasa<select id="goal"><option value="balanced" selected>Seimbang · acidity sedikit menonjol</option><option value="sweet">Manis & body</option><option value="bright">Acidity & clarity</option><option value="strong">Body lebih tebal</option></select></label>
+<label>Sumber air<select id="water"><option value="filtered" selected>Tersaring / purified</option><option value="mineral">Air mineral (mineral beragam)</option></select></label>
+<label>Jenis filter<select id="filter"><option value="standard" selected>Kertas standar sesuai dripper</option><option value="fast">Fast-flow / resistansi rendah</option><option value="slow">Lebih lambat / high-resistance</option></select></label>
+</div>
+<button id="calculate" class="primary-btn">Hitung ulang rekomendasi <span>↗</span></button><div class="section-heading options-heading"><div><span class="eyebrow">PILIHAN TEKNIK</span><h2>Resep untuk dosis ini</h2></div><span class="tag">AUTO-SCALE</span></div>
+<div id="recipe-options" class="recipe-options" aria-live="polite"></div><div id="recipe" class="recipe-card" aria-live="polite"></div><p class="note">Angka klik hanya starting point sesuai model dan titik nol. Waktu tuang adalah target, bukan jaminan drawdown. Ubah satu variabel setiap seduhan agar hasil tasting bisa dibandingkan.</p></section>
+<section id="timer-panel" class="panel hidden"><div class="section-heading"><div><span class="eyebrow">BREW CLOCK</span><h2>Ikuti alurnya</h2></div><span class="tag">TIMER RESEP</span></div><div class="timer-card"><div id="timer-phase" class="eyebrow">SIAP MEMULAI</div><div id="clock" class="clock">00:00</div><div id="timer-hint" class="timer-hint">Pilih resep untuk melihat jadwal.</div><div class="timer-actions"><button id="timer-start" class="primary-btn">Mulai timer</button><button id="timer-reset" class="ghost-btn">Reset</button></div></div><div id="steps" class="steps"></div></section>
+<section id="journal-panel" class="panel hidden"><div class="section-heading"><div><span class="eyebrow">TASTING NOTES</span><h2>Catat hasilnya</h2></div><span class="tag">JOURNAL</span></div><form id="tasting-form" class="journal-form"><label>Nama biji / origin<input id="origin" placeholder="Contoh: Toraja Kalosi Washed" required></label><div class="form-grid"><label>Waktu seduh<select id="drawdown"><option>2:00–2:30</option><option selected>2:30–3:00</option><option>3:00–3:30</option><option>3:30+</option></select></label><label>Acidity<select id="acidity"><option>Rendah</option><option selected>Seimbang</option><option>Menonjol</option><option>Terlalu tajam</option></select></label><label>Manis<select id="sweetness"><option>Rendah</option><option selected>Sedang</option><option>Tinggi</option></select></label><label>Body<select id="body"><option>Ringan</option><option selected>Sedang</option><option>Tebal</option></select></label></div><label>Catatan rasa<textarea id="notes" rows="3" placeholder="Mis. citrus, cokelat, clean finish..."></textarea></label><button class="primary-btn" type="submit">Simpan tasting <span>↗</span></button></form><div class="section-heading journal-list-heading"><h2>Riwayat seduhan</h2><span id="entry-count" class="tag">0 CATATAN</span></div><div id="journal-list" class="journal-list"></div></section></main><footer>BREWLAB <span>·</span> BREW WITH INTENTION</footer></div><script type="module" src="./src/main.js"></script></body></html>
