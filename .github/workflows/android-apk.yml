@@ -28,7 +28,10 @@ jobs:
         uses: android-actions/setup-android@v3
       - name: Install required Android SDK packages
         run: |
-          yes | sdkmanager --licenses >/dev/null
+          # Accept licenses without letting the yes process's SIGPIPE fail the workflow.
+          set +o pipefail
+          yes | sdkmanager --licenses >/dev/null 2>&1 || true
+          set -o pipefail
           sdkmanager --install "platforms;android-35" "build-tools;35.0.0" "platform-tools"
       - name: Verify build toolchain
         run: |
