@@ -25,14 +25,13 @@ jobs:
           distribution: temurin
           java-version: '21'
       - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+        uses: android-actions/setup-android@v4
+        with:
+          packages: 'platform-tools'
+          accept-android-sdk-licenses: true
+          log-accepted-android-sdk-licenses: false
       - name: Install required Android SDK packages
-        run: |
-          # Accept licenses without letting the yes process's SIGPIPE fail the workflow.
-          set +o pipefail
-          yes | sdkmanager --licenses >/dev/null 2>&1 || true
-          set -o pipefail
-          sdkmanager --install "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+        run: sdkmanager --install "platforms;android-35" "build-tools;35.0.0"
       - name: Verify build toolchain
         run: |
           node --version
