@@ -20,7 +20,7 @@ npm run build
 ```
 
 ## Build Android APK
-The GitHub Actions workflow **Build BrewLab Android APK** runs on pushes to `dev/brewlab-android` and can also be started manually from the Actions tab. On success, download the `BrewLab-debug-apk` artifact from that workflow run. This is a debug APK, not a Play Store release.
+The GitHub Actions workflow **Build BrewLab Android APK** runs on pushes to `main` and can also be started manually from the Actions tab. It installs Android SDK API 35 and Build Tools 35 explicitly before building. On success, download the `BrewLab-debug-apk` artifact from that workflow run. This is a debug APK, not a Play Store release.
 
 ## Brewing calibration
 Recipe values are starting recommendations, not guaranteed ideal settings. Grinder click counts depend on the grinder's zero-point and calibration. Record tasting outcomes and change one parameter at a time.
