@@ -1,4 +1,5 @@
 name: Build BrewLab Android APK
+
 on:
   workflow_dispatch:
   push:
@@ -12,35 +13,49 @@ on:
       - 'scripts/**'
       - 'tests/**'
       - '.github/workflows/android-apk.yml'
+
 permissions:
   contents: read
+
+concurrency:
+  group: brewlab-android-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '21'
+
       - name: Install dependencies
         run: npm install
+
       - name: Test and build web app
         run: npm test && npm run build
+
       - name: Add Android platform
         run: npx cap add android
+
       - name: Sync Capacitor
         run: npx cap sync android
+
       - name: Build debug APK
         working-directory: android
         run: ./gradlew assembleDebug
+
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
