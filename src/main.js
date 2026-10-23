@@ -9,6 +9,7 @@ function loadJournal(){try{return JSON.parse(localStorage.getItem(journalKey)||'
 function sourceLinks(ids){return[...new Set(ids||[])].map(id=>{const s=recipeSources[id];return s?`<a href="${s.url}" target="_blank" rel="noopener noreferrer">${esc(s.label)} ↗</a>`:'';}).filter(Boolean).join('');}
 function resetTimer(){clearInterval(timerId);running=false;seconds=0;$('clock').textContent='00:00';$('timer-start').textContent='Mulai timer';}
 function renderRecipe(resetClock=false){
+ $('dose-display').textContent=$('dose').value||'13';document.querySelectorAll('[data-dose]').forEach(b=>b.classList.toggle('active',Number(b.dataset.dose)===Number($('dose').value)));
  const oldId=currentRecipe?.id;if(resetClock&&currentRecipe)resetTimer();recipeOptions=calculateRecipes(getForm());
  currentRecipe=recipeOptions.find(r=>r.id===oldId)||recipeOptions.find(r=>r.id===($('goal').value==='bright'?'pulse-5':$('goal').value==='sweet'||$('goal').value==='strong'?'pulse-3':'pulse-4'))||recipeOptions[0];
  $('recipe-options').innerHTML=recipeOptions.map(r=>`<button type="button" class="recipe-option ${r.id===currentRecipe.id?'selected':''}" data-recipe-id="${r.id}" aria-pressed="${r.id===currentRecipe.id}"><span class="option-kicker">${esc(r.label)}</span><strong>${esc(r.title)}</strong><small>${r.water} g air · ${r.temp}°C · ${esc(r.grind)}</small><em>${esc(r.descriptor)}</em></button>`).join('');
@@ -30,14 +31,18 @@ function renderSelectedRecipe(){
  <button id="use-timer" class="secondary-btn">Gunakan timer resep ↗</button>`;
  $('use-timer').onclick=()=>{setTab('timer');resetTimer();renderSteps();renderTimerCue();};
 }
-function setTab(name){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));['brew','timer','journal'].forEach(n=>$(n+'-panel').classList.toggle('hidden',n!==name));if(name==='journal')renderJournal();}
+function setTab(name){document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));['brew','timer','journal'].forEach(n=>$(n+'-panel').classList.toggle('hidden',n!==name));if(name==='journal')renderJournal();window.scrollTo({top:0,behavior:'smooth'});}
 document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>setTab(b.dataset.tab)));
 $('calculate').addEventListener('click',()=>renderRecipe(true));
 ['dose','device','roast','goal','grinder','bean','process','water','filter'].forEach(id=>$(id).addEventListener(id==='dose'?'input':'change',()=>renderRecipe(true)));
+$('dose-minus').addEventListener('click',()=>{ $('dose').value=Math.max(5,Number($('dose').value||13)-0.5);renderRecipe(true); });
+$('dose-plus').addEventListener('click',()=>{ $('dose').value=Math.min(40,Number($('dose').value||13)+0.5);renderRecipe(true); });
+document.querySelectorAll('[data-dose]').forEach(b=>b.addEventListener('click',()=>{ $('dose').value=b.dataset.dose;renderRecipe(true); }));
+
 function renderSteps(){$('steps').innerHTML=currentRecipe?currentRecipe.steps.map((s,i)=>`<div class="timer-step" data-step="${i}"><span>${String(i+1).padStart(2,'0')}</span><div class="step-body"><div class="step-heading"><b>${esc(s.title)}</b><time>${fmt(s.atSeconds)}</time></div><small>${esc(s.detail)}</small>${s.target!==undefined?`<span class="step-math">${s.amount>0?'+'+s.amount+' g':'tanpa tambahan air'} · total ${s.target} g</span>`:''}</div></div>`).join(''):'';}
 function renderTimerCue(){
  if(!currentRecipe)return;const steps=currentRecipe.steps,next=steps.find(s=>s.atSeconds>seconds);let activeIndex=-1;steps.forEach((s,i)=>{if(s.atSeconds<=seconds)activeIndex=i;});
- document.querySelectorAll('.timer-step').forEach((el,i)=>{el.classList.toggle('current',i===activeIndex);el.classList.toggle('done',i<activeIndex);});
+ document.querySelectorAll('.timer-step').forEach((el,i)=>{el.classList.toggle('current',i===activeIndex);el.classList.toggle('done',i<activeIndex);});const last=steps[steps.length-1]?.atSeconds||1;$('timer-progress-fill').style.width=Math.min(100,seconds/last*100)+'%';
  const active=activeIndex>=0?steps[activeIndex]:null;
  if(seconds===0&&!running){$('timer-phase').textContent='SIAP MEMULAI';$('timer-hint').textContent=`${currentRecipe.methodName} · ${currentRecipe.title}. Mulai timer saat mulai menyeduh.`;}
  else if(next){const gap=next.atSeconds-seconds;$('timer-phase').textContent=active?.action?String(active.action).toUpperCase():'SEDANG MENYEDUH';$('timer-hint').textContent=gap<=5?`Siapkan tahap berikut: ${next.title} pada ${fmt(next.atSeconds)}. ${next.detail}`:`Tahap sekarang: ${active?.title||'Persiapan'}. Berikutnya ${fmt(next.atSeconds)} — ${next.title}. ${active?.detail||''}`;}
@@ -52,5 +57,6 @@ function renderJournal(){
 }
 function suggest(e){if(e.acidity==='Terlalu tajam')return'Eksperimen berikutnya: turunkan suhu 1–2°C atau ubah grind satu klik; ubah satu hal saja.';if(e.acidity==='Rendah')return'Coba naikkan suhu 1–2°C atau sedikit perhalus grind; ubah satu hal saja.';if(e.sweetness==='Rendah')return'Coba satu perubahan kecil untuk meningkatkan ekstraksi, lalu bandingkan.';return'Hasil terlihat cukup seimbang. Pertahankan resep sebagai kontrol sebelum eksperimen berikutnya.';}
 $('tasting-form').addEventListener('submit',e=>{e.preventDefault();const entries=loadJournal();entries.unshift({origin:$('origin').value,drawdown:$('drawdown').value,acidity:$('acidity').value,sweetness:$('sweetness').value,body:$('body').value,notes:$('notes').value,date:new Date().toISOString(),recipe:currentRecipe});localStorage.setItem(journalKey,JSON.stringify(entries.slice(0,100)));e.target.reset();renderJournal();});
+let touchX=0,touchY=0;const tabNames=['brew','timer','journal'];document.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].screenX;touchY=e.changedTouches[0].screenY;},{passive:true});document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].screenX-touchX,dy=e.changedTouches[0].screenY-touchY;if(Math.abs(dx)<85||Math.abs(dx)<Math.abs(dy)*1.25)return;const active=document.querySelector('.bottom-nav .tab.active')?.dataset.tab||'brew';const idx=tabNames.indexOf(active);const next=tabNames[Math.max(0,Math.min(tabNames.length-1,idx+(dx<0?1:-1)))];if(next!==active)setTab(next);},{passive:true});
 renderRecipe();renderJournal();
 if('serviceWorker'in navigator&&location.protocol!=='file:')window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
